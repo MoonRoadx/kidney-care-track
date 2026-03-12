@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KidneyCare Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>KidneyCare Tracker</h1>
+        <div class="patient-info">
+            <h2 id="patient-name">Lanha</h2>
+            <p>Rein droit: <span id="kidney-status">18-20%</span></p>
+            <p>Dernier examen: <span id="last-exam">ECBU (12 mars 2024)</span></p>
+        </div>
+        <div class="buttons">
+            <button id="urgence-btn" class="btn urgent">Urgence</button>
+            <button id="add-symptom-btn" class="btn">Ajouter Symptôme</button>
+            <button id="add-exam-btn" class="btn">Ajouter Examen</button>
+        </div>
+        <div id="symptom-form" class="form-container hidden">
+            <h3>Ajouter un Symptôme</h3>
+            <input type="text" id="symptom-input" placeholder="Ex: Douleur au rein droit">
+            <input type="date" id="symptom-date">
+            <button id="save-symptom-btn" class="btn">Enregistrer</button>
+        </div>
+        <div id="exam-form" class="form-container hidden">
+            <h3>Ajouter un Examen</h3>
+            <input type="text" id="exam-type-input" placeholder="Ex: ECBU">
+            <input type="text" id="exam-result-input" placeholder="Ex: 18-20%">
+            <input type="date" id="exam-date">
+            <button id="save-exam-btn" class="btn">Enregistrer</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
