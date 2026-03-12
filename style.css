@@ -118,7 +118,8 @@ body {
     background-color: white;
 }
 
-#appointments-list .history-item {
+#appointments-list .history-item,
+#food-journal-list .history-item {
     display: flex;
     justify-content: space-between;
 }
@@ -129,8 +130,4 @@ body {
     border: 1px solid #ddd;
     border-radius: 4px;
     background-color: #f9f9f9;
-}
-
-.hidden {
-    display: none;
 }
