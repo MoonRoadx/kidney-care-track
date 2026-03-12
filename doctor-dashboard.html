@@ -6,8 +6,10 @@
     <title>Tableau de Bord Médecin - KidneyCare Tracker</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-analytics-compat.js"></script>
 </head>
 <body>
     <div class="container">
@@ -21,6 +23,6 @@
             <div id="doctor-messages"></div>
         </div>
     </div>
-    <script src="doctor-script.js"></script>
+    <script type="module" src="doctor-script.js"></script>
 </body>
 </html>
