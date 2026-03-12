@@ -14,9 +14,18 @@
             <button id="logout-btn" class="btn">Déconnexion</button>
         </div>
         <div class="patient-info">
+            <div class="profile-picture-container">
+                <img id="profile-picture" src="https://via.placeholder.com/100" alt="Photo de profil" class="profile-picture">
+                <input type="file" id="upload-picture" accept="image/*" class="hidden">
+                <button id="change-picture-btn" class="btn">Changer la photo</button>
+            </div>
             <h2 id="patient-name">Lanha</h2>
             <p>Rein droit: <span id="kidney-status">18-20%</span></p>
             <p>Dernier examen: <span id="last-exam">ECBU (12 mars 2024)</span></p>
+        </div>
+        <div class="options-menu">
+            <button id="edit-patient-btn" class="btn">Modifier les informations</button>
+            <button id="export-data-btn" class="btn">Exporter les données</button>
         </div>
         <div class="buttons">
             <button id="urgence-btn" class="btn urgent">Urgence</button>
@@ -36,10 +45,27 @@
             <input type="date" id="exam-date">
             <button id="save-exam-btn" class="btn">Enregistrer</button>
         </div>
+        <div id="edit-patient-form" class="form-container hidden">
+            <h3>Modifier les informations du patient</h3>
+            <input type="text" id="edit-patient-name" placeholder="Nom du patient">
+            <input type="text" id="edit-kidney-status" placeholder="Statut du rein">
+            <button id="save-patient-btn" class="btn">Enregistrer</button>
+        </div>
         <div id="history" class="history-container">
             <h3>Historique</h3>
             <div id="symptoms-history"></div>
             <div id="exams-history"></div>
+        </div>
+        <div id="appointments" class="history-container">
+            <h3>Rendez-vous</h3>
+            <div id="appointments-list"></div>
+            <button id="add-appointment-btn" class="btn">Ajouter un Rendez-vous</button>
+        </div>
+        <div id="appointment-form" class="form-container hidden">
+            <h3>Ajouter un Rendez-vous</h3>
+            <input type="text" id="appointment-title" placeholder="Titre du rendez-vous">
+            <input type="datetime-local" id="appointment-datetime">
+            <button id="save-appointment-btn" class="btn">Enregistrer</button>
         </div>
         <div class="chart-container">
             <canvas id="kidney-chart"></canvas>
