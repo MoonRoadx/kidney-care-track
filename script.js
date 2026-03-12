@@ -15,29 +15,43 @@ document.addEventListener('DOMContentLoaded', function() {
     const editPatientForm = document.getElementById('edit-patient-form');
     const savePatientBtn = document.getElementById('save-patient-btn');
     const exportDataBtn = document.getElementById('export-data-btn');
+    const shareDataBtn = document.getElementById('share-data-btn');
     const addAppointmentBtn = document.getElementById('add-appointment-btn');
     const appointmentForm = document.getElementById('appointment-form');
     const saveAppointmentBtn = document.getElementById('save-appointment-btn');
+    const generateCardBtn = document.getElementById('generate-card-btn');
+    const cardForm = document.getElementById('card-form');
+    const saveCardBtn = document.getElementById('save-card-btn');
+    const addFoodBtn = document.getElementById('add-food-btn');
+    const foodJournalForm = document.getElementById('food-journal-form');
+    const saveFoodBtn = document.getElementById('save-food-btn');
+    const showMapBtn = document.getElementById('show-map-btn');
+    const mapContainer = document.getElementById('map-container');
+    const scanNfcBtn = document.getElementById('scan-nfc-btn');
 
     // Données
     let symptoms = [];
     let exams = [];
     let appointments = [];
+    let foodJournal = [];
 
     // Charger les données
     function loadData() {
         const savedSymptoms = localStorage.getItem('symptoms');
         const savedExams = localStorage.getItem('exams');
         const savedAppointments = localStorage.getItem('appointments');
+        const savedFoodJournal = localStorage.getItem('foodJournal');
 
         if (savedSymptoms) symptoms = JSON.parse(savedSymptoms);
         if (savedExams) exams = JSON.parse(savedExams);
         if (savedAppointments) appointments = JSON.parse(savedAppointments);
+        if (savedFoodJournal) foodJournal = JSON.parse(savedFoodJournal);
 
         displayHistory();
         generateChart();
         loadProfilePicture();
         displayAppointments();
+        displayFoodJournal();
     }
 
     // Sauvegarder les données
@@ -45,6 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem('symptoms', JSON.stringify(symptoms));
         localStorage.setItem('exams', JSON.stringify(exams));
         localStorage.setItem('appointments', JSON.stringify(appointments));
+        localStorage.setItem('foodJournal', JSON.stringify(foodJournal));
     }
 
     // Afficher l'historique
@@ -169,6 +184,8 @@ document.addEventListener('DOMContentLoaded', function() {
         examForm.classList.add('hidden');
         editPatientForm.classList.add('hidden');
         appointmentForm.classList.add('hidden');
+        foodJournalForm.classList.add('hidden');
+        cardForm.classList.add('hidden');
     });
 
     // Afficher le formulaire pour ajouter un examen
@@ -177,6 +194,8 @@ document.addEventListener('DOMContentLoaded', function() {
         symptomForm.classList.add('hidden');
         editPatientForm.classList.add('hidden');
         appointmentForm.classList.add('hidden');
+        foodJournalForm.classList.add('hidden');
+        cardForm.classList.add('hidden');
     });
 
     // Bouton Urgence
@@ -196,6 +215,8 @@ document.addEventListener('DOMContentLoaded', function() {
         symptomForm.classList.add('hidden');
         examForm.classList.add('hidden');
         appointmentForm.classList.add('hidden');
+        foodJournalForm.classList.add('hidden');
+        cardForm.classList.add('hidden');
         document.getElementById('edit-patient-name').value = document.getElementById('patient-name').textContent;
         document.getElementById('edit-kidney-status').value = document.getElementById('kidney-status').textContent;
     });
@@ -221,6 +242,7 @@ document.addEventListener('DOMContentLoaded', function() {
             symptoms: symptoms,
             exams: exams,
             appointments: appointments,
+            foodJournal: foodJournal,
             patientName: document.getElementById('patient-name').textContent,
             kidneyStatus: document.getElementById('kidney-status').textContent
         };
@@ -234,12 +256,42 @@ document.addEventListener('DOMContentLoaded', function() {
         linkElement.click();
     });
 
+    // Partager les données
+    shareDataBtn.addEventListener('click', function() {
+        const data = {
+            symptoms: symptoms,
+            exams: exams,
+            appointments: appointments,
+            foodJournal: foodJournal,
+            patientName: document.getElementById('patient-name').textContent,
+            kidneyStatus: document.getElementById('kidney-status').textContent
+        };
+
+        const dataStr = JSON.stringify(data);
+        const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+
+        if (navigator.share) {
+            navigator.share({
+                title: 'Données KidneyCare Tracker',
+                text: `Voici les données de suivi pour ${data.patientName}`,
+                url: dataUri,
+            }).catch(err => {
+                console.log('Erreur lors du partage:', err);
+                alert("Le partage n'est pas supporté sur ce navigateur. Utilisez l'export pour sauvegarder les données.");
+            });
+        } else {
+            alert("Le partage n'est pas supporté sur ce navigateur. Utilisez l'export pour sauvegarder les données.");
+        }
+    });
+
     // Gestion des rendez-vous
     addAppointmentBtn.addEventListener('click', function() {
         appointmentForm.classList.toggle('hidden');
         symptomForm.classList.add('hidden');
         examForm.classList.add('hidden');
         editPatientForm.classList.add('hidden');
+        foodJournalForm.classList.add('hidden');
+        cardForm.classList.add('hidden');
     });
 
     // Afficher les rendez-vous
@@ -253,7 +305,25 @@ document.addEventListener('DOMContentLoaded', function() {
                     <p><strong>${new Date(appointment.datetime).toLocaleString()}</strong>: ${appointment.title}</p>
                 </div>
             `;
+            scheduleAppointmentNotification(appointment);
         });
+    }
+
+    // Planifier une notification pour un rendez-vous
+    function scheduleAppointmentNotification(appointment) {
+        const now = new Date();
+        const appointmentTime = new Date(appointment.datetime);
+        const timeUntilAppointment = appointmentTime - now;
+
+        if (timeUntilAppointment > 0) {
+            setTimeout(() => {
+                if (Notification.permission === 'granted') {
+                    new Notification(`Rappel: Rendez-vous pour ${appointment.title}`, {
+                        body: `Le rendez-vous est prévu à ${appointmentTime.toLocaleString()}`,
+                    });
+                }
+            }, timeUntilAppointment - 3600000); // Notifier 1 heure avant
+        }
     }
 
     // Enregistrer un rendez-vous
@@ -270,6 +340,150 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('appointment-datetime').value = '';
         } else {
             alert('Veuillez entrer un titre et une date pour le rendez-vous.');
+        }
+    });
+
+    // Générer une carte de suivi
+    generateCardBtn.addEventListener('click', function() {
+        cardForm.classList.toggle('hidden');
+        symptomForm.classList.add('hidden');
+        examForm.classList.add('hidden');
+        editPatientForm.classList.add('hidden');
+        appointmentForm.classList.add('hidden');
+        foodJournalForm.classList.add('hidden');
+    });
+
+    // Écrire sur une puce NFC
+    saveCardBtn.addEventListener('click', function() {
+        const patientName = document.getElementById('card-patient-name').value;
+        if (patientName) {
+            const cardData = `PATIENT_${patientName}`;
+            writeToNFCTag(cardData);
+            cardForm.classList.add('hidden');
+            document.getElementById('card-patient-name').value = '';
+        } else {
+            alert('Veuillez entrer le nom du patient.');
+        }
+    });
+
+    // Lire une puce NFC
+    if ('NDEFReader' in window) {
+        scanNfcBtn.addEventListener('click', async () => {
+            try {
+                const reader = new NDEFReader();
+                await reader.scan();
+
+                reader.onreading = event => {
+                    const message = event.message;
+                    for (const record of message.records) {
+                        const textDecoder = new TextDecoder(record.encoding);
+                        const nfcData = textDecoder.decode(record.data);
+
+                        alert(`Données NFC lues : ${nfcData}`);
+
+                        if (nfcData.startsWith("PATIENT_")) {
+                            const patientId = nfcData.split("_")[1];
+                            alert(`Chargement des données pour le patient ${patientId}`);
+                        }
+                    }
+                };
+
+                reader.onerror = () => {
+                    alert("Erreur lors de la lecture de la puce NFC.");
+                };
+
+            } catch (error) {
+                alert(`Erreur : ${error}`);
+            }
+        });
+    } else {
+        scanNfcBtn.textContent = "NFC non supporté";
+        scanNfcBtn.disabled = true;
+    }
+
+    // Écrire sur une puce NFC
+    async function writeToNFCTag(data) {
+        if ('NDEFReader' in window) {
+            try {
+                const writer = new NDEFReader();
+                await writer.write({ records: [{ recordType: "text", data }] });
+                alert("Données écrites sur la puce NFC avec succès !");
+            } catch (error) {
+                alert(`Erreur : ${error}`);
+            }
+        } else {
+            alert("Web NFC non supporté par ce navigateur.");
+        }
+    }
+
+    // Afficher la carte des centres médicaux
+    showMapBtn.addEventListener('click', function() {
+        mapContainer.classList.toggle('hidden');
+        initMap();
+    });
+
+    // Initialiser la carte
+    function initMap() {
+        if (window.google) {
+            const map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 48.8566, lng: 2.3522 },
+                zoom: 12
+            });
+
+            new google.maps.Marker({
+                position: { lat: 48.8566, lng: 2.3522 },
+                map: map,
+                title: 'Hôpital Exemple'
+            });
+        } else {
+            const script = document.createElement('script');
+            script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyD3CrD7PGL6DlVpG8NvmiJt1YZ5jcGmjoE&callback=initMap`;
+            script.async = true;
+            script.defer = true;
+            document.head.appendChild(script);
+        }
+    }
+
+    // Journal alimentaire
+    addFoodBtn.addEventListener('click', function() {
+        foodJournalForm.classList.toggle('hidden');
+        symptomForm.classList.add('hidden');
+        examForm.classList.add('hidden');
+        editPatientForm.classList.add('hidden');
+        appointmentForm.classList.add('hidden');
+        cardForm.classList.add('hidden');
+    });
+
+    // Afficher le journal alimentaire
+    function displayFoodJournal() {
+        const foodJournalList = document.getElementById('food-journal-list');
+        foodJournalList.innerHTML = '';
+
+        foodJournal.forEach(food => {
+            foodJournalList.innerHTML += `
+                <div class="history-item">
+                    <p><strong>${food.date || "Date non spécifiée"}</strong>: ${food.name} - ${food.notes || ''}</p>
+                </div>
+            `;
+        });
+    }
+
+    // Enregistrer une entrée dans le journal alimentaire
+    saveFoodBtn.addEventListener('click', function() {
+        const foodName = document.getElementById('food-name').value;
+        const foodNotes = document.getElementById('food-notes').value;
+        const foodDate = document.getElementById('food-date').value;
+
+        if (foodName) {
+            foodJournal.push({ name: foodName, notes: foodNotes, date: foodDate });
+            saveData();
+            displayFoodJournal();
+            foodJournalForm.classList.add('hidden');
+            document.getElementById('food-name').value = '';
+            document.getElementById('food-notes').value = '';
+            document.getElementById('food-date').value = '';
+        } else {
+            alert('Veuillez entrer le nom de l\'aliment.');
         }
     });
 
