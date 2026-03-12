@@ -7,8 +7,10 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0/dist/tf.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-analytics-compat.js"></script>
 </head>
 <body>
     <div class="container">
@@ -127,7 +129,7 @@
             <canvas id="kidney-chart"></canvas>
         </div>
     </div>
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             if (localStorage.getItem('loggedIn') !== 'true') {
