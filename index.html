@@ -6,6 +6,9 @@
     <title>KidneyCare Tracker</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0/dist/tf.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </head>
 <body>
     <div class="container">
@@ -24,6 +27,7 @@
             <p>Dernier examen: <span id="last-exam">ECBU (12 mars 2024)</span></p>
         </div>
         <div class="options-menu">
+            <a href="doctor-dashboard.html" class="btn" target="_blank">Tableau de Bord Médecin</a>
             <button id="scan-nfc-btn" class="btn">Scanner une puce NFC</button>
             <button id="edit-patient-btn" class="btn">Modifier les informations</button>
             <button id="export-data-btn" class="btn">Exporter les données</button>
@@ -64,6 +68,33 @@
             <h3>Historique</h3>
             <div id="symptoms-history"></div>
             <div id="exams-history"></div>
+        </div>
+        <div id="prediction-section" class="history-container">
+            <h3>Analyse Prédictive</h3>
+            <p>Prédire les risques de complications rénales en fonction de vos données.</p>
+            <button id="predict-btn" class="btn">Lancer l'Analyse Prédictive</button>
+            <div id="prediction-result" class="hidden">
+                <h4>Résultat de l'Analyse</h4>
+                <p id="prediction-text"></p>
+                <canvas id="prediction-chart"></canvas>
+            </div>
+        </div>
+        <div id="consultation-section" class="history-container">
+            <h3>Téléconsultation</h3>
+            <p>Consultez un médecin en vidéo.</p>
+            <button id="start-consultation-btn" class="btn">Démarrer une Téléconsultation</button>
+            <div id="consultation-room" class="hidden">
+                <iframe id="jitsi-meet" allow="camera; microphone" style="width: 100%; height: 400px; border: none;"></iframe>
+            </div>
+        </div>
+        <div id="messaging-section" class="history-container">
+            <h3>Messagerie Sécurisée</h3>
+            <p>Échangez avec votre médecin de manière sécurisée.</p>
+            <div id="messages-list" style="height: 200px; overflow-y: scroll; border: 1px solid #ddd; padding: 10px; margin-bottom: 10px;"></div>
+            <div style="display: flex;">
+                <input type="text" id="message-input" placeholder="Votre message" style="width: 80%; padding: 10px; margin-right: 10px;">
+                <button id="send-message-btn" class="btn">Envoyer</button>
+            </div>
         </div>
         <div id="appointments" class="history-container">
             <h3>Rendez-vous</h3>
