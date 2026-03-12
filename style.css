@@ -131,3 +131,22 @@ body {
     border-radius: 4px;
     background-color: #f9f9f9;
 }
+
+#consultation-room {
+    margin-top: 20px;
+}
+
+#prediction-result {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+#messages-list {
+    background-color: white;
+    border-radius: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+}
