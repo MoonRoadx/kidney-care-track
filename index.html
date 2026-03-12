@@ -5,10 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KidneyCare Tracker</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
-        <h1>KidneyCare Tracker</h1>
+        <div class="header">
+            <h1>KidneyCare Tracker</h1>
+            <button id="logout-btn" class="btn">Déconnexion</button>
+        </div>
         <div class="patient-info">
             <h2 id="patient-name">Lanha</h2>
             <p>Rein droit: <span id="kidney-status">18-20%</span></p>
@@ -32,7 +36,22 @@
             <input type="date" id="exam-date">
             <button id="save-exam-btn" class="btn">Enregistrer</button>
         </div>
+        <div id="history" class="history-container">
+            <h3>Historique</h3>
+            <div id="symptoms-history"></div>
+            <div id="exams-history"></div>
+        </div>
+        <div class="chart-container">
+            <canvas id="kidney-chart"></canvas>
+        </div>
     </div>
     <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('loggedIn') !== 'true') {
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
 </body>
 </html>
