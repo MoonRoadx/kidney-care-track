@@ -27,9 +27,24 @@ body {
     padding: 10px;
     background-color: #f9f9f9;
     border-radius: 4px;
+    text-align: center;
 }
 
-.buttons {
+.profile-picture-container {
+    margin-bottom: 10px;
+}
+
+.profile-picture {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #007BFF;
+    display: block;
+    margin: 0 auto 10px;
+}
+
+.buttons, .options-menu {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -103,10 +118,19 @@ body {
     background-color: white;
 }
 
+#appointments-list .history-item {
+    display: flex;
+    justify-content: space-between;
+}
+
 .chart-container {
     margin-top: 20px;
     padding: 15px;
     border: 1px solid #ddd;
     border-radius: 4px;
     background-color: #f9f9f9;
+}
+
+.hidden {
+    display: none;
 }
