@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord Médecin - KidneyCare Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Tableau de Bord Médecin</h1>
+        <div class="doctor-dashboard">
+            <h2>Patients à Risque</h2>
+            <div id="risk-patients"></div>
+            <h2>Tendances</h2>
+            <canvas id="doctor-trends-chart"></canvas>
+            <h2>Messages</h2>
+            <div id="doctor-messages"></div>
+        </div>
+    </div>
+    <script src="doctor-script.js"></script>
+</body>
+</html>
