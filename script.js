@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Éléments DOM
     const addSymptomBtn = document.getElementById('add-symptom-btn');
     const addExamBtn = document.getElementById('add-exam-btn');
     const symptomForm = document.getElementById('symptom-form');
@@ -7,26 +8,43 @@ document.addEventListener('DOMContentLoaded', function() {
     const saveExamBtn = document.getElementById('save-exam-btn');
     const urgenceBtn = document.getElementById('urgence-btn');
     const logoutBtn = document.getElementById('logout-btn');
+    const changePictureBtn = document.getElementById('change-picture-btn');
+    const uploadPicture = document.getElementById('upload-picture');
+    const profilePicture = document.getElementById('profile-picture');
+    const editPatientBtn = document.getElementById('edit-patient-btn');
+    const editPatientForm = document.getElementById('edit-patient-form');
+    const savePatientBtn = document.getElementById('save-patient-btn');
+    const exportDataBtn = document.getElementById('export-data-btn');
+    const addAppointmentBtn = document.getElementById('add-appointment-btn');
+    const appointmentForm = document.getElementById('appointment-form');
+    const saveAppointmentBtn = document.getElementById('save-appointment-btn');
 
+    // Données
     let symptoms = [];
     let exams = [];
+    let appointments = [];
 
-    // Charger l'historique depuis localStorage
-    function loadHistory() {
+    // Charger les données
+    function loadData() {
         const savedSymptoms = localStorage.getItem('symptoms');
         const savedExams = localStorage.getItem('exams');
+        const savedAppointments = localStorage.getItem('appointments');
 
         if (savedSymptoms) symptoms = JSON.parse(savedSymptoms);
         if (savedExams) exams = JSON.parse(savedExams);
+        if (savedAppointments) appointments = JSON.parse(savedAppointments);
 
         displayHistory();
         generateChart();
+        loadProfilePicture();
+        displayAppointments();
     }
 
-    // Sauvegarder l'historique dans localStorage
-    function saveHistory() {
+    // Sauvegarder les données
+    function saveData() {
         localStorage.setItem('symptoms', JSON.stringify(symptoms));
         localStorage.setItem('exams', JSON.stringify(exams));
+        localStorage.setItem('appointments', JSON.stringify(appointments));
     }
 
     // Afficher l'historique
@@ -56,8 +74,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Générer un graphique de suivi
     function generateChart() {
         const ctx = document.getElementById('kidney-chart').getContext('2d');
-
-        // Exemple de données
         const dates = exams.map(exam => exam.date || "Date inconnue");
         const results = exams.map(exam => parseFloat(exam.result));
 
@@ -85,6 +101,31 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Charger la photo de profil
+    function loadProfilePicture() {
+        const savedPicture = localStorage.getItem('profilePicture');
+        if (savedPicture) {
+            profilePicture.src = savedPicture;
+        }
+    }
+
+    // Changer la photo de profil
+    changePictureBtn.addEventListener('click', function() {
+        uploadPicture.click();
+    });
+
+    uploadPicture.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                profilePicture.src = event.target.result;
+                localStorage.setItem('profilePicture', event.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
     // Enregistrer un symptôme
     saveSymptomBtn.addEventListener('click', function() {
         const symptom = document.getElementById('symptom-input').value;
@@ -92,8 +133,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (symptom) {
             symptoms.push({ text: symptom, date: date });
-            saveHistory();
-            alert(`Symptôme enregistré : ${symptom} (Date : ${date || "non spécifiée"})`);
+            saveData();
+            displayHistory();
             symptomForm.classList.add('hidden');
             document.getElementById('symptom-input').value = '';
             document.getElementById('symptom-date').value = '';
@@ -110,8 +151,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (examType && examResult) {
             exams.push({ type: examType, result: examResult, date: date });
-            saveHistory();
-            alert(`Examen enregistré : ${examType} (Résultat : ${examResult}, Date : ${date || "non spécifiée"})`);
+            saveData();
+            displayHistory();
+            generateChart();
             examForm.classList.add('hidden');
             document.getElementById('exam-type-input').value = '';
             document.getElementById('exam-result-input').value = '';
@@ -125,12 +167,16 @@ document.addEventListener('DOMContentLoaded', function() {
     addSymptomBtn.addEventListener('click', function() {
         symptomForm.classList.toggle('hidden');
         examForm.classList.add('hidden');
+        editPatientForm.classList.add('hidden');
+        appointmentForm.classList.add('hidden');
     });
 
     // Afficher le formulaire pour ajouter un examen
     addExamBtn.addEventListener('click', function() {
         examForm.classList.toggle('hidden');
         symptomForm.classList.add('hidden');
+        editPatientForm.classList.add('hidden');
+        appointmentForm.classList.add('hidden');
     });
 
     // Bouton Urgence
@@ -144,6 +190,89 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = 'login.html';
     });
 
-    // Charger l'historique au démarrage
-    loadHistory();
+    // Modifier les informations du patient
+    editPatientBtn.addEventListener('click', function() {
+        editPatientForm.classList.toggle('hidden');
+        symptomForm.classList.add('hidden');
+        examForm.classList.add('hidden');
+        appointmentForm.classList.add('hidden');
+        document.getElementById('edit-patient-name').value = document.getElementById('patient-name').textContent;
+        document.getElementById('edit-kidney-status').value = document.getElementById('kidney-status').textContent;
+    });
+
+    // Enregistrer les modifications du patient
+    savePatientBtn.addEventListener('click', function() {
+        const newName = document.getElementById('edit-patient-name').value;
+        const newStatus = document.getElementById('edit-kidney-status').value;
+
+        if (newName) {
+            document.getElementById('patient-name').textContent = newName;
+        }
+        if (newStatus) {
+            document.getElementById('kidney-status').textContent = newStatus;
+        }
+
+        editPatientForm.classList.add('hidden');
+    });
+
+    // Exporter les données
+    exportDataBtn.addEventListener('click', function() {
+        const data = {
+            symptoms: symptoms,
+            exams: exams,
+            appointments: appointments,
+            patientName: document.getElementById('patient-name').textContent,
+            kidneyStatus: document.getElementById('kidney-status').textContent
+        };
+
+        const dataStr = JSON.stringify(data);
+        const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+        const exportFileDefaultName = 'kidney-care-data.json';
+        const linkElement = document.createElement('a');
+        linkElement.setAttribute('href', dataUri);
+        linkElement.setAttribute('download', exportFileDefaultName);
+        linkElement.click();
+    });
+
+    // Gestion des rendez-vous
+    addAppointmentBtn.addEventListener('click', function() {
+        appointmentForm.classList.toggle('hidden');
+        symptomForm.classList.add('hidden');
+        examForm.classList.add('hidden');
+        editPatientForm.classList.add('hidden');
+    });
+
+    // Afficher les rendez-vous
+    function displayAppointments() {
+        const appointmentsList = document.getElementById('appointments-list');
+        appointmentsList.innerHTML = '';
+
+        appointments.forEach(appointment => {
+            appointmentsList.innerHTML += `
+                <div class="history-item">
+                    <p><strong>${new Date(appointment.datetime).toLocaleString()}</strong>: ${appointment.title}</p>
+                </div>
+            `;
+        });
+    }
+
+    // Enregistrer un rendez-vous
+    saveAppointmentBtn.addEventListener('click', function() {
+        const title = document.getElementById('appointment-title').value;
+        const datetime = document.getElementById('appointment-datetime').value;
+
+        if (title && datetime) {
+            appointments.push({ title: title, datetime: datetime });
+            saveData();
+            displayAppointments();
+            appointmentForm.classList.add('hidden');
+            document.getElementById('appointment-title').value = '';
+            document.getElementById('appointment-datetime').value = '';
+        } else {
+            alert('Veuillez entrer un titre et une date pour le rendez-vous.');
+        }
+    });
+
+    // Charger les données au démarrage
+    loadData();
 });
