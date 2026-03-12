@@ -1,15 +1,23 @@
-// Initialiser Firebase
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js";
+import { getDatabase, ref, onValue, push, set } from "https://www.gstatic.com/firebasejs/9.6.11/firebase-database-compat.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.11/firebase-analytics-compat.js";
+
+// Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "VOTRE_API_KEY",
-    authDomain: "VOTRE_PROJECT_ID.firebaseapp.com",
-    databaseURL: "https://VOTRE_PROJECT_ID.firebaseio.com",
-    projectId: "VOTRE_PROJECT_ID",
-    storageBucket: "VOTRE_PROJECT_ID.appspot.com",
-    messagingSenderId: "VOTRE_SENDER_ID",
-    appId: "VOTRE_APP_ID"
+  apiKey: "AIzaSyByqG8oZzfSZeYpCOxpSRRk3jDqpnJeuUA",
+  authDomain: "kidneycaretracker-1a030.firebaseapp.com",
+  projectId: "kidneycaretracker-1a030",
+  storageBucket: "kidneycaretracker-1a030.firebasestorage.app",
+  messagingSenderId: "302890693728",
+  appId: "1:302890693728:web:6f86ff8481f277457e7f05",
+  measurementId: "G-3QW5FCRYFT"
 };
-firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const database = getDatabase(app);
 
 // Variables globales
 let symptoms = [];
@@ -542,8 +550,8 @@ document.getElementById('start-consultation-btn').addEventListener('click', func
 
 // Messagerie sécurisée
 function loadMessages() {
-    const messagesRef = database.ref('messages');
-    messagesRef.on('value', (snapshot) => {
+    const messagesRef = ref(database, 'messages');
+    onValue(messagesRef, (snapshot) => {
         const messages = snapshot.val();
         displayMessages(messages);
     });
@@ -572,8 +580,8 @@ document.getElementById('send-message-btn').addEventListener('click', function()
     const messageText = messageInput.value.trim();
 
     if (messageText) {
-        const messagesRef = database.ref('messages');
-        messagesRef.push({
+        const messagesRef = ref(database, 'messages');
+        push(messagesRef, {
             sender: document.getElementById('patient-name').textContent,
             text: messageText,
             timestamp: Date.now()
