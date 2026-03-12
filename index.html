@@ -24,13 +24,17 @@
             <p>Dernier examen: <span id="last-exam">ECBU (12 mars 2024)</span></p>
         </div>
         <div class="options-menu">
+            <button id="scan-nfc-btn" class="btn">Scanner une puce NFC</button>
             <button id="edit-patient-btn" class="btn">Modifier les informations</button>
             <button id="export-data-btn" class="btn">Exporter les données</button>
+            <button id="share-data-btn" class="btn">Partager les données</button>
+            <button id="show-map-btn" class="btn">Centres médicaux</button>
         </div>
         <div class="buttons">
             <button id="urgence-btn" class="btn urgent">Urgence</button>
             <button id="add-symptom-btn" class="btn">Ajouter Symptôme</button>
             <button id="add-exam-btn" class="btn">Ajouter Examen</button>
+            <button id="generate-card-btn" class="btn">Générer une Carte de Suivi</button>
         </div>
         <div id="symptom-form" class="form-container hidden">
             <h3>Ajouter un Symptôme</h3>
@@ -51,6 +55,11 @@
             <input type="text" id="edit-kidney-status" placeholder="Statut du rein">
             <button id="save-patient-btn" class="btn">Enregistrer</button>
         </div>
+        <div id="card-form" class="form-container hidden">
+            <h3>Générer une Carte de Suivi</h3>
+            <input type="text" id="card-patient-name" placeholder="Nom du patient">
+            <button id="save-card-btn" class="btn">Générer la Carte</button>
+        </div>
         <div id="history" class="history-container">
             <h3>Historique</h3>
             <div id="symptoms-history"></div>
@@ -67,6 +76,22 @@
             <input type="datetime-local" id="appointment-datetime">
             <button id="save-appointment-btn" class="btn">Enregistrer</button>
         </div>
+        <div id="food-journal-form" class="form-container hidden">
+            <h3>Ajouter une Entrée au Journal Alimentaire</h3>
+            <input type="text" id="food-name" placeholder="Nom de l'aliment">
+            <input type="text" id="food-notes" placeholder="Notes">
+            <input type="date" id="food-date">
+            <button id="save-food-btn" class="btn">Enregistrer</button>
+        </div>
+        <div id="food-journal" class="history-container">
+            <h3>Journal Alimentaire</h3>
+            <div id="food-journal-list"></div>
+            <button id="add-food-btn" class="btn">Ajouter une Entrée</button>
+        </div>
+        <div id="map-container" class="history-container hidden">
+            <h3>Centres Médicaux à Proximité</h3>
+            <div id="map" style="height: 300px; width: 100%;"></div>
+        </div>
         <div class="chart-container">
             <canvas id="kidney-chart"></canvas>
         </div>
@@ -76,6 +101,9 @@
         document.addEventListener('DOMContentLoaded', function() {
             if (localStorage.getItem('loggedIn') !== 'true') {
                 window.location.href = 'login.html';
+            }
+            if (Notification.permission !== 'granted') {
+                Notification.requestPermission();
             }
         });
     </script>
